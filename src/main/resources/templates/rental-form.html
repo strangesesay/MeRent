@@ -1,35 +1,213 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Rental Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${rental?.id} ? 'Edit Rental' : 'New Rental'">Rental Form</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        label { display: block; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #45a049; }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+        }
+        .form-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .card-header i {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+            border-right: 0;
+        }
+        .form-control, .form-select {
+            border-left: 0;
+        }
+        .btn-save {
+            background: linear-gradient(45deg, #28a745, #218838);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-save:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        .btn-cancel {
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 600;
+        }
+        .form-select option {
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
-<h2 th:text="${rental?.id} ? 'Edit Rental' : 'New Rental'"></h2>
-<form th:action="@{/admin/rentals/save}" method="post">
-    <input type="hidden" name="id" th:value="${rental?.id}" />
-    <label>House</label>
-    <select name="houseId" required>
-        <option value="">Select House</option>
-        <option th:each="house : ${houses}" th:value="${house.id}" th:text="${house.address}" th:selected="${rental.house.id == house.id}"></option>
-    </select>
-    <label>Tenant</label>
-    <select name="tenantId" required>
-        <option value="">Select Tenant</option>
-        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}" th:selected="${rental.tenant.id == user.id}"></option>
-    </select>
-    <label>Start Date</label>
-    <input type="date" name="startDate" th:value="${rental?.startDate}" required />
-    <label>End Date</label>
-    <input type="date" name="endDate" th:value="${rental?.endDate}" />
-    <button type="submit">Save</button>
-</form>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Form Card -->
+            <div class="card form-card">
+                <div class="card-header">
+                    <div th:if="${rental?.id}">
+                        <i class="bi bi-journal-text d-block"></i>
+                        Edit Rental
+                    </div>
+                    <div th:unless="${rental?.id}">
+                        <i class="bi bi-plus-circle-fill d-block"></i>
+                        Create New Rental
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <form th:action="@{/admin/rentals/save}" method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="id" th:value="${rental?.id}" />
+
+                        <!-- House -->
+                        <div class="mb-3">
+                            <label for="houseId" class="form-label fw-semibold">
+                                <i class="bi bi-building-fill me-1"></i> House
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-house-door"></i>
+                                </span>
+                                <select id="houseId" name="houseId" class="form-select" required>
+                                    <option value="">Select a house</option>
+                                    <option th:each="house : ${houses}"
+                                            th:value="${house.id}"
+                                            th:text="${house.address}"
+                                            th:selected="${rental?.house?.id == house.id}"></option>
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please select a house.
+                            </div>
+                        </div>
+
+                        <!-- Tenant -->
+                        <div class="mb-3">
+                            <label for="tenantId" class="form-label fw-semibold">
+                                <i class="bi bi-person-badge me-1"></i> Tenant
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <select id="tenantId" name="tenantId" class="form-select" required>
+                                    <option value="">Select a tenant</option>
+                                    <option th:each="user : ${users}"
+                                            th:value="${user.id}"
+                                            th:text="${user.username}"
+                                            th:selected="${rental?.tenant?.id == user.id}"></option>
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please select a tenant.
+                            </div>
+                        </div>
+
+                        <!-- Start Date -->
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label fw-semibold">
+                                <i class="bi bi-calendar-check me-1"></i> Start Date
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <input type="date" id="startDate" name="startDate"
+                                       class="form-control" th:value="${rental?.startDate}"
+                                       required />
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a start date.
+                            </div>
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="mb-4">
+                            <label for="endDate" class="form-label fw-semibold">
+                                <i class="bi bi-calendar-x me-1"></i> End Date
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar-x"></i>
+                                </span>
+                                <input type="date" id="endDate" name="endDate"
+                                       class="form-control" th:value="${rental?.endDate}" />
+                            </div>
+                            <small class="text-muted">Leave blank for open-ended rental</small>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                            <a th:href="@{/admin/rentals}" class="btn btn-outline-secondary btn-cancel">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success btn-save text-white">
+                                <i class="bi bi-check-circle me-1"></i>
+                                <span th:text="${rental?.id} ? 'Update Rental' : 'Create Rental'">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Enable Bootstrap form validation -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
 </body>
 </html>

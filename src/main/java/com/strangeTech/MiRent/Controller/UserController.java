@@ -18,7 +18,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("users", service.findAll());
-        return "user.-list";
+        return "user-list";
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)

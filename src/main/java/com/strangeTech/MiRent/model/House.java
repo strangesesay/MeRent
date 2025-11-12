@@ -22,6 +22,7 @@ public class House {
     private double price;
     private String description;
 
+
     @ManyToOne
     private AppUser owner;
 

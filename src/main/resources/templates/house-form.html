@@ -1,29 +1,201 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>House Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${house?.id} ? 'Edit House' : 'New House'">House Form</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        label { display: block; margin-bottom: 5px; }
-        input, textarea, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #45a049; }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+        }
+        .form-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .card-header i {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+            border-right: 0;
+        }
+        .form-control, .form-select {
+            border-left: 0;
+        }
+        .btn-save {
+            background: linear-gradient(45deg, #28a745, #218838);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-save:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        .btn-cancel {
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 600;
+        }
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
     </style>
 </head>
 <body>
-<h2 th:text="${house?.id} ? 'Edit House' : 'New House'"></h2>
-<form th:action="@{/admin/houses/save}" method="post">
-    <input type="hidden" name="id" th:value="${house?.id}" />
-    <label>Address</label>
-    <input type="text" name="address" th:value="${house?.address}" required />
-    <label>Price</label>
-    <input type="number" name="price" th:value="${house?.price}" required />
-    <label>Description</label>
-    <textarea name="description" th:text="${house?.description}"></textarea>
-    <label>Owner</label>
 
-    <button type="submit">Save</button>
-</form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Form Card -->
+            <div class="card form-card">
+                <div class="card-header">
+
+                    <div th:if="${house?.id}">
+                        <i class="bi bi-building-fill d-block"></i>
+                        Edit House
+                    </div>
+                    <div th:unless="${house?.id}">
+                        <i class="bi bi-plus-circle-fill d-block"></i>
+                        Add New House
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <form th:action="@{/admin/houses/save}" method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="id" th:value="${house?.id}" />
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label for="address" class="form-label fw-semibold">
+                                <i class="bi bi-geo-alt-fill me-1"></i> Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-house-door"></i>
+                                </span>
+                                <input type="text" id="address" name="address"
+                                       class="form-control" th:value="${house?.address}"
+                                       placeholder="123 Main St, City" required />
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid address.
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mb-3">
+                            <label for="price" class="form-label fw-semibold">
+                                <i class="bi bi-currency-dollar me-1"></i> Price (per month)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">SLE</span>
+                                <input type="number" id="price" name="price"
+                                       class="form-control" th:value="${house?.price}"
+                                       placeholder="1200" min="0"  required />
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid price.
+                            </div>
+                            <small class="text-muted">Enter amount in Leones</small>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-semibold">
+                                <i class="bi bi-card-text me-1"></i> Description
+                            </label>
+                            <textarea id="description" name="description"
+                                      class="form-control" placeholder="Cozy 3-bedroom house with garden..."
+                                      th:text="${house?.description}"></textarea>
+                        </div>
+
+                        <!-- Owner (Placeholder - assume dropdown in real app) -->
+<!--                        <div class="mb-4">-->
+<!--                            <label for="owner" class="form-label fw-semibold">-->
+<!--                                <i class="bi bi-person-badge me-1"></i> Owner-->
+<!--                            </label>-->
+<!--                            <select id="owner" name="ownerId" class="form-select" required>-->
+<!--                                <option value="">Select Owner</option>-->
+<!--                                &lt;!&ndash; In real app: th:each="user : ${users}" &ndash;&gt;-->
+<!--                                <option th:each="user : ${users}"-->
+<!--                                        th:value="${user.id}"-->
+<!--                                        th:text="${user.username}"-->
+<!--                                        th:selected="${house?.owner?.id == user.id}"></option>-->
+<!--                            </select>-->
+<!--                            <div class="invalid-feedback">-->
+<!--                                Please select an owner.-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                        <!-- Buttons -->
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                            <a th:href="@{/admin/houses}" class="btn btn-outline-secondary btn-cancel">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success btn-save text-white">
+                                <i class="bi bi-check-circle me-1"></i>
+                                <span th:text="${house?.id} ? 'Update House' : 'Create House'">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Enable Bootstrap form validation -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
 </body>
 </html>

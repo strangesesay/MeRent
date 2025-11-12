@@ -42,13 +42,12 @@ public class HouseController {
     public String save(@RequestParam(required = false) Long id,
                        @RequestParam String address,
                        @RequestParam double price,
-                       @RequestParam String description,
-                       @RequestParam Long ownerId) {
+                       @RequestParam String description
+                       ) {
         House house = id != null ? service.findById(id) : new House();
         house.setAddress(address);
         house.setPrice(price);
         house.setDescription(description);
-        house.setOwner(userService.findById(ownerId));
         service.save(house);
         return "redirect:/admin/houses";
     }

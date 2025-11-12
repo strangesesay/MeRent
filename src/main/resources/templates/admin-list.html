@@ -1,34 +1,138 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admins</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admins - House Rental</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        a { color: #4CAF50; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .add { display: block; margin-bottom: 20px; padding: 10px; background: #4CAF50; color: white; text-align: center; border-radius: 4px; text-decoration: none; }
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .page-title {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        .btn-add {
+            background: linear-gradient(45deg, #28a745, #218838);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-add:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        .table-actions .btn {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        th {
+            background-color: #495057 !important;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
-<body>
-<h2>Admins</h2>
-<a class="add" th:href="@{/admin/admins/new}">Add New Admin</a>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Actions</th>
-    </tr>
-    <tr th:each="admin : ${admins}">
-        <td th:text="${admin.id}"></td>
-        <td th:text="${admin.username}"></td>
-        <td>
-            <a th:href="@{/admin/admins/edit(id=${admin.id})}">Edit</a>
-            <a th:href="@{/admin/admins/delete(id=${admin.id})}">Delete</a>
-        </td>
-    </tr>
-</table>
+<body class="py-4">
+
+<div class="container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 page-title mb-0">
+            <i class="bi bi-person-badge-fill me-2"></i>
+            Admins
+        </h1>
+        <a th:href="@{/admin/admins/new}" class="btn btn-success btn-add text-white">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Add New Admin
+        </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="text-white" style="background-color: #343a40;">
+                    <tr>
+                        <th scope="col" class="ps-4">ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="admin : ${admins}" class="border-bottom">
+                        <td class="ps-4 fw-medium" th:text="${admin.id}">#1</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle text-primary me-2"></i>
+                                <span th:text="${admin.username}">admin123</span>
+                            </div>
+                        </td>
+                        <td class=" w-100 text-center">
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/admin/admins/edit(id=${admin.id})}"
+                                   class="btn btn-outline-warning btn-sm rounded-start"
+                                   title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a th:href="@{/admin/admins/delete(id=${admin.id})}"
+                                   class="btn btn-outline-danger btn-sm rounded-end"
+                                   title="Delete"
+                                   onclick="return confirm('Delete this admin?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <button type="button"
+                        th:onclick="'window.location.href=\'' + @{/admin/admin/dashboard} + '\''"
+                        class="btn btn-outline-secondary btn-back">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to Admin Dashboard
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(admins)}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox display-1 d-block mb-3 opacity-25"></i>
+                <p class="lead">No admins found.</p>
+                <a th:href="@{/admin/admins/new}" class="btn btn-outline-primary">
+                    Add Your First Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

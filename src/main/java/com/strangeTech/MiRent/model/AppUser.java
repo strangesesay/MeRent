@@ -20,6 +20,7 @@ public class AppUser {
     private Long id;
     private String username;
     private String password;
+    @Column(unique = true,nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "owner")

@@ -22,10 +22,7 @@
     <label>Description</label>
     <textarea name="description" th:text="${house?.description}"></textarea>
     <label>Owner</label>
-    <select name="ownerId" required>
-        <option value="">Select Owner</option>
-        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}" th:selected="${house.owner.id == user.id}"></option>
-    </select>
+
     <button type="submit">Save</button>
 </form>
 </body>

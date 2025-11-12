@@ -1,6 +1,5 @@
 package com.strangeTech.MiRent.Controller;
 
-
 import com.strangeTech.MiRent.Service.UserService;
 import com.strangeTech.MiRent.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("users", service.findAll());
-        return "user-list";
+        return "user.-list";
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)

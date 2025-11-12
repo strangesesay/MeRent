@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Rental – Available Houses</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        .search-bar {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-bar input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        .card-img {
+            height: 200px;
+            background: #ecf0f1;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .card-img::after {
+            content: "Photo";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #95a5a6;
+            font-weight: 500;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .card-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .card-address {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .card-address::before {
+            content: "Location";
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        .card-desc {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+        .card-owner {
+            font-weight: 500;
+            color: #3498db;
+        }
+        .no-houses {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        .no-houses::before {
+            content: "Empty";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <h1>House Rental</h1>
+        <p>Find your perfect home from our listed properties</p>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search by address, city, or price..." />
+    </div>
+
+    <div class="cards" th:if="${#lists.isEmpty(houses) == false}">
+        <div class="card" th:each="house : ${houses}">
+            <div class="card-img" th:style="'background-image: url(/images/houses/' + ${house.id} + '.jpg)'">
+                <!-- Placeholder – replace with real images later -->
+            </div>
+            <div class="card-body">
+                <div class="card-title" th:text="${house.address}">123 Main St</div>
+                <div class="card-price" th:text="'$' + ${house.price} + '/month'">$1,200/month</div>
+                <div class="card-address" th:text="${house.address}">Colombo, Sri Lanka</div>
+                <div class="card-desc" th:text="${house.description} ?: 'No description available.'">
+                    Spacious 3-bedroom house with garden and parking...
+                </div>
+                <div class="card-footer">
+                    <span class="card-owner" th:text="'Owner: ' + (${house.owner?.username} ?: 'Unknown')">
+                        Owner: John
+                    </span>
+                    <span th:text="'ID: ' + ${house.id}">ID: 1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-houses" th:if="${#lists.isEmpty(houses)}">
+        No houses available at the moment.
+    </div>
+
+    <footer>
+        <p>&copy; 2025 House Rental System. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

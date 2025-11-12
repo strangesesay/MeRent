@@ -14,30 +14,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/admin/**").authenticated()
-                        .anyRequest().permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()  // ← ALL URLs OPEN
                 )
-                .formLogin(form -> form
-                        .loginPage("/admin/login")
-                        .defaultSuccessUrl("/admin/dashboard", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/admin/login")
-                        .permitAll()
-                );
+                .csrf(csrf -> csrf.disable()) // ← Optional: disable CSRF for simplicity
+                .formLogin(form -> form.disable())
+                .logout(logout -> logout.disable());
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var user = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("password")
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user);
     }
 
 }

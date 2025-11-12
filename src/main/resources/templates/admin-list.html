@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admins</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .add { display: block; margin-bottom: 20px; padding: 10px; background: #4CAF50; color: white; text-align: center; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<h2>Admins</h2>
+<a class="add" th:href="@{/admin/admins/new}">Add New Admin</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="admin : ${admins}">
+        <td th:text="${admin.id}"></td>
+        <td th:text="${admin.username}"></td>
+        <td>
+            <a th:href="@{/admin/admins/edit(id=${admin.id})}">Edit</a>
+            <a th:href="@{/admin/admins/delete(id=${admin.id})}">Delete</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

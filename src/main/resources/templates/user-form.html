@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+<h2 th:text="${user?.id} ? 'Edit User' : 'New User'"></h2>
+<form th:action="@{/admin/users/save}" method="post">
+    <input type="hidden" name="id" th:value="${user?.id}" />
+    <label>Username</label>
+    <input type="text" name="username" th:value="${user?.username}" required />
+    <label>Email</label>
+    <input type="email" name="email" th:value="${user?.email}" required />
+    <label>Password</label>
+    <input type="password" name="password" th:value="${user?.password}" required />
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

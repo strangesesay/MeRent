@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rental Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+<h2 th:text="${rental?.id} ? 'Edit Rental' : 'New Rental'"></h2>
+<form th:action="@{/admin/rentals/save}" method="post">
+    <input type="hidden" name="id" th:value="${rental?.id}" />
+    <label>House</label>
+    <select name="houseId" required>
+        <option value="">Select House</option>
+        <option th:each="house : ${houses}" th:value="${house.id}" th:text="${house.address}" th:selected="${rental.house.id == house.id}"></option>
+    </select>
+    <label>Tenant</label>
+    <select name="tenantId" required>
+        <option value="">Select Tenant</option>
+        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}" th:selected="${rental.tenant.id == user.id}"></option>
+    </select>
+    <label>Start Date</label>
+    <input type="date" name="startDate" th:value="${rental?.startDate}" required />
+    <label>End Date</label>
+    <input type="date" name="endDate" th:value="${rental?.endDate}" />
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>
